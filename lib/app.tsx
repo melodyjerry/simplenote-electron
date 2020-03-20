@@ -53,6 +53,7 @@ export type OwnProps = {
 export type DispatchProps = {
   createNote: () => any;
   closeNote: () => any;
+  fetchPreferences: () => any;
   focusSearchField: () => any;
   selectNote: (note: T.NoteEntity) => any;
 };
@@ -99,6 +100,7 @@ const mapDispatchToProps: S.MapDispatch<
       dispatch
     ),
     closeNote: () => dispatch(closeNote()),
+    fetchPreferences: () => dispatch(actions.settings.fetchPreferences()),
     remoteNoteUpdate: (noteId, data) =>
       dispatch(actions.simperium.remoteNoteUpdate(noteId, data)),
     loadTags: () => dispatch(loadTags()),
@@ -187,7 +189,7 @@ export const App = connect(
           })
         );
 
-      this.props.preferencesBucket.on('update', this.onLoadPreferences);
+      this.props.preferencesBucket.on('update', this.props.fetchPreferences);
 
       this.props.tagBucket
         .on('index', this.props.loadTags)
@@ -203,10 +205,11 @@ export const App = connect(
         .on('connect', () => this.props.setSimperiumConnectionStatus(true))
         .on('disconnect', () => this.props.setSimperiumConnectionStatus(false));
 
-      this.onLoadPreferences(() =>
-        // Make sure that tracking starts only after preferences are loaded
-        analytics.tracks.recordEvent('application_opened')
-      );
+      // this.onLoadPreferences(() =>
+      // console.log( 'app opened');
+      //   // Make sure that tracking starts only after preferences are loaded
+      //   analytics.tracks.recordEvent('application_opened')
+      // );
 
       this.toggleShortcuts(true);
 
@@ -304,7 +307,7 @@ export const App = connect(
 
       setAuthorized();
       analytics.initialize(accountName);
-      this.onLoadPreferences();
+      this.props.fetchPreferences();
 
       // 'Kick' the app to ensure content is loaded after signing in
       this.onNotesIndex();
@@ -348,12 +351,6 @@ export const App = connect(
         });
       }
     };
-
-    onLoadPreferences = callback =>
-      this.props.actions.loadPreferences({
-        callback,
-        preferencesBucket: this.props.preferencesBucket,
-      });
 
     getTheme = () => {
       const {
@@ -432,12 +429,6 @@ export const App = connect(
       } else {
         window.removeEventListener('keydown', this.handleShortcut, true);
       }
-    };
-
-    loadPreferences = () => {
-      this.props.actions.loadPreferences({
-        preferencesBucket: this.props.preferencesBucket,
-      });
     };
 
     render() {

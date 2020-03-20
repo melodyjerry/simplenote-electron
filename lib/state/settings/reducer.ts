@@ -5,6 +5,7 @@ import * as T from '../../types';
 
 export const initialState = {
   accountName: null as string | null,
+  analyticsEnabled: false,
   autoHideMenuBar: false,
   focusModeEnabled: false,
   fontSize: 16,
@@ -24,6 +25,10 @@ const reducer: A.Reducer<typeof initialState> = (
   action
 ) => {
   switch (action.type) {
+    case 'SET_ANALYTICS_ENABLED':
+      return { ...state, analyticsEnabled: action.analyticsEnabled };
+    case 'TOGGLE_ANALYTICS_ENABLED':
+      return { ...state, analyticsEnabled: !state.analyticsEnabled };
     case 'setAccountName':
       return { ...state, accountName: action.accountName };
     case 'setAutoHideMenuBar':

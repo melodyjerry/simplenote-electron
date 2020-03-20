@@ -1,17 +1,30 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import actions from '../../../state/actions';
 import PanelTitle from '../../../components/panel-title';
 import SettingsGroup, { Item } from '../../settings-group';
 import ToggleGroup from '../../toggle-settings-group';
 import TopRightArrowIcon from '../../../icons/arrow-top-right';
 import { viewExternalUrl } from '../../../utils/url-utils';
 
+import * as S from '../../../state';
+
+type DispatchProps = {
+  toggleAnalyticsEnabled: () => any;
+};
+
+type StateProps = {
+  analyticsEnabled: boolean;
+};
+
 const AccountPanel = props => {
   const {
     accountName,
     analyticsEnabled,
     requestSignOut,
-    toggleShareAnalyticsPreference,
+    toggleAnalyticsEnabled,
   } = props;
 
   const onEditAccount = () => {
@@ -44,7 +57,7 @@ const AccountPanel = props => {
             slug="shareAnalytics"
             activeSlug={analyticsEnabled ? 'enabled' : ''}
             description="Help us improve Simplenote by sharing usage data with our analytics tool."
-            onChange={toggleShareAnalyticsPreference}
+            onChange={toggleAnalyticsEnabled}
             learnMoreURL="https://automattic.com/cookies"
             renderer={ToggleGroup}
           >
@@ -67,9 +80,17 @@ const AccountPanel = props => {
 
 AccountPanel.propTypes = {
   accountName: PropTypes.string.isRequired,
-  analyticsEnabled: PropTypes.bool.isRequired,
   requestSignOut: PropTypes.func.isRequired,
-  toggleShareAnalyticsPreference: PropTypes.func.isRequired,
 };
 
-export default AccountPanel;
+const mapStateToProps: S.MapState<StateProps> = ({
+  settings: { analyticsEnabled },
+}) => ({
+  analyticsEnabled,
+});
+
+const mapDispatchToProps: S.MapDispatch<DispatchProps> = {
+  toggleAnalyticsEnabled: () => actions.settings.toggleAnalyticsEnabled(),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AccountPanel);

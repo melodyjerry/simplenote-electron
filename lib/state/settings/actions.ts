@@ -4,6 +4,10 @@ import * as A from '../action-types';
 
 const ipc = getIpcRenderer();
 
+export const fetchPreferences: A.ActionCreator<A.FetchPreferences> = () => ({
+  type: 'FETCH_PREFERENCES',
+});
+
 export const setFontSize: A.ActionCreator<A.SetFontSize> = (
   fontSize?: number
 ) => ({
@@ -33,6 +37,17 @@ export const resetFontSize: A.ActionCreator<A.SetFontSize> = () =>
 export const activateTheme: A.ActionCreator<A.SetTheme> = theme => ({
   type: 'setTheme',
   theme,
+});
+
+export const setAnalyticsEnabled: A.ActionCreator<A.SetAnalyticsEnabled> = (
+  analyticsEnabled: boolean
+) => ({
+  type: 'SET_ANALYTICS_ENABLED',
+  analyticsEnabled,
+});
+
+export const toggleAnalyticsEnabled: A.ActionCreator<A.ToggleAnalyticsEnabled> = () => ({
+  type: 'TOGGLE_ANALYTICS_ENABLED',
 });
 
 export const setNoteDisplay: A.ActionCreator<A.SetNoteDisplay> = noteDisplay => ({
